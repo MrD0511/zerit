@@ -1,0 +1,6 @@
+zerit-frontend/node_modules
+zerit-frontend/.env.local
+zerit-frontend/.next
+
+zerit-backend/node_modules
+zerit-backend/.env
