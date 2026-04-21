@@ -1,3 +1,5 @@
+'use client'
+
 import { FileItem } from "@/types/file"
 import { useCallback, useState } from "react"
 
@@ -46,8 +48,9 @@ export function useFiles(){
                 };
 
             } catch (err) {
-            console.error("Failed to read PDF:", file.name);
-            return null;
+                console.log(err);
+                console.error("Failed to read PDF:", file.name);
+                return null;
             }
         })
         );
@@ -55,12 +58,20 @@ export function useFiles(){
         const validItems = newFileItems.filter(
             (item): item is FileItem => item !== null
         );
+        if (validItems.length === 0) return;
         setFiles((prev) => [...prev, ...validItems]);
-        console.log(validItems)
+        setSelectedFileId((prev) => prev ?? validItems[0].id);
     }, [])
 
     const removeFileItem = (id: string) => {
-        setFiles((prev) => prev.filter((fileItem) => fileItem.id != id))
+        setFiles((prev) => {
+            const updated = prev.filter((fileItem) => fileItem.id !== id);
+            setSelectedFileId((current) => {
+                if (current !== id) return current;
+                return updated.length > 0 ? updated[0].id : null;
+            });
+            return updated;
+        })
     }
 
 

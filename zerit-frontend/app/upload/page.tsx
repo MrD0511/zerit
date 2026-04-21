@@ -22,17 +22,25 @@ export default function UploadPage(){
         addFiles,
         removeFileItem,
         updateFile,
-        applyToAll,
-        setFiles,
     } = useFiles();
 
 
     const selectedFile = files.find((f) => f.id === selectedFileId);
+    const totalPages = files.reduce((sum, file) => sum + file.numPages, 0);
+    const hasFiles = files.length > 0;
+    const selectedFileName = selectedFile?.file.name ?? "No file selected";
 
     return (
         <PrintLayout 
             left={
                 <div className="flex flex-col gap-3">
+                    <div className="rounded-2xl border border-gray-200/70 bg-white/80 px-4 py-3 dark:border-white/10 dark:bg-white/[0.02]">
+                        <p className="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">Job summary</p>
+                        <div className="mt-2 flex items-center justify-between text-sm">
+                            <span className="text-gray-900 dark:text-gray-100">{files.length} file{files.length === 1 ? "" : "s"}</span>
+                            <span className="text-cyan-600 dark:text-cyan-300">{totalPages} total pages</span>
+                        </div>
+                    </div>
 
                     <FileUploadBox
                         addFiles={addFiles}
@@ -48,27 +56,39 @@ export default function UploadPage(){
             }
 
             center={
-                <PDFViewer fileItem={selectedFile || null} />
+                hasFiles ? (
+                    <PDFViewer fileItem={selectedFile || null} />
+                ) : (
+                    <div className="flex min-h-[280px] items-center justify-center rounded-2xl border border-dashed border-gray-300/80 bg-white/70 p-6 text-center dark:border-white/10 dark:bg-white/[0.02]">
+                        <p className="max-w-sm text-sm text-gray-500 dark:text-gray-400">
+                            Upload at least one PDF to see a live preview and configure print settings.
+                        </p>
+                    </div>
+                )
             }
 
             right={
                 selectedFile ? (
                 <EditConfig fileItem={selectedFile} updateFile={updateFile} />
                 ) : (
-                <></>
+                <div className="flex min-h-[280px] items-center justify-center rounded-2xl border border-dashed border-gray-300/80 bg-white/70 p-6 text-center dark:border-white/10 dark:bg-white/[0.02]">
+                    <p className="max-w-sm text-sm text-gray-500 dark:text-gray-400">
+                        Select a file from the list to edit page range, copies, color mode, and print sides.
+                    </p>
+                </div>
                 )
             } 
             
             mobile={
                 selectedFile ? 
                     <div className="w-full">
-                        <div className="w-full px-3 py-6 flex gap-4">
-                            <button onClick={() => setSelectedFileId("")}>
+                        <div className="mb-3 flex w-full items-center gap-4 rounded-2xl border border-gray-200/70 bg-white/80 px-3 py-4 dark:border-white/10 dark:bg-white/[0.02]">
+                            <button className="rounded-lg p-1 hover:bg-cyan-400/10" onClick={() => setSelectedFileId("")}>
                                 <ChevronLeft className="text-gray-900 dark:text-gray-100"/>
                             </button>
 
                             <div>
-                                <span className="text-2xl text-gray-900 dark:text-gray-100 font-semibold">{selectedFile.file.name}</span>
+                                <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">{selectedFileName}</span>
                             </div>
                         </div>
 
@@ -86,8 +106,7 @@ export default function UploadPage(){
                             files={files}
                             removeFileItem={removeFileItem}
                             setSelectedFileId={setSelectedFileId}
-                        selectedFileId={selectedFileId}
-
+                            selectedFileId={selectedFileId}
                         />
                     </div>
                 }

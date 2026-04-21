@@ -1,9 +1,10 @@
-import { pdfjs } from "react-pdf";
+import { getDocument, GlobalWorkerOptions, version } from "pdfjs-dist";
 
-// pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Ensure worker is configured for utility usage outside PdfViewer.
+GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
 
 export async function getPdfPageCount(file: File): Promise<number> {
   const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+  const pdf = await getDocument({ data: arrayBuffer }).promise;
   return pdf.numPages;
 }

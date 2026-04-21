@@ -45,30 +45,30 @@ export default function EditConfig({fileItem, updateFile}:
     return (
         <div className="w-full flex flex-col gap-3">
 
-            <div className="bg-gray-100/60 dark:bg-slate-800/60 backdrop-blur border border-slate-400 dark:border-slate-700/50 rounded-xl p-4 space-y-3">
-            <label htmlFor="numOfCopies" className="text-xs text-slate-700 dark:text-slate-500">Number of Copies</label>
+            <div className="rounded-2xl border border-gray-200/80 bg-white/80 p-4 backdrop-blur dark:border-white/10 dark:bg-white/[0.02]">
+            <label htmlFor="numOfCopies" className="text-xs font-semibold uppercase tracking-widest text-slate-600 dark:text-slate-400">Number of Copies</label>
                 <input type="number" onChange={handleNumOfCopiesChange} id="numOfCopies"
                         value={fileItem.numOfCopies} 
-                        className="bg-slate-900 border border-slate-600 text-slate-200 text-sm rounded-lg px-3 py-2 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition"
+                        className="mt-2 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-slate-700 transition focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 dark:border-white/10 dark:bg-[#151924] dark:text-slate-200"
                 />
             </div>
 
             {/* Range */}
-            <div className="bg-gray-100/60 dark:bg-slate-800/60 backdrop-blur border border-slate-400 dark:border-slate-700/50 rounded-xl p-4 space-y-3">
+            <div className="rounded-2xl border border-gray-200/80 bg-white/80 p-4 backdrop-blur dark:border-white/10 dark:bg-white/[0.02]">
                 <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-400 uppercase tracking-widest">Page Range</span>
-                    <span className="text-xs text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-semibold uppercase tracking-widest text-slate-700 dark:text-slate-400">Page Range</span>
+                    <span className="rounded-full bg-cyan-400/10 px-2 py-0.5 text-xs text-cyan-600 dark:text-cyan-300">
                         {totalPages} page{totalPages !== 1 ? 's' : ''}
                     </span>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="mt-3 flex items-center gap-3">
                 <div className="flex flex-col gap-1 flex-1">
                     <label className="text-xs text-slate-700 dark:text-slate-500">From</label>
                     <input
                     type="number"
                     value={fileItem.range[0]}
-                    className="bg-slate-900 border border-slate-600 text-slate-200 text-sm rounded-lg px-3 py-2 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition"
+                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-slate-700 transition focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 dark:border-white/10 dark:bg-[#151924] dark:text-slate-200"
                     onChange={(e) => handleRangeChange(e, "start")}
                     />
                 </div>
@@ -78,12 +78,12 @@ export default function EditConfig({fileItem, updateFile}:
                     <input
                     type="number"
                     value={fileItem.range[1]}
-                    className="bg-slate-900 border border-slate-600 text-slate-200 text-sm rounded-lg px-3 py-2 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition"
+                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-slate-700 transition focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 dark:border-white/10 dark:bg-[#151924] dark:text-slate-200"
                     onChange={(e) => handleRangeChange(e, "end")}
                     />
                 </div>
                 <button
-                    className="mt-5 p-2 text-slate-700 dark:text-slate-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-lg transition flex-shrink-0"
+                    className="mt-5 flex-shrink-0 rounded-lg p-2 text-slate-700 transition hover:bg-cyan-400/10 hover:text-cyan-500 dark:text-slate-400"
                     title="Reset range"
                     onClick={() => resetRange()}
                 >
@@ -94,13 +94,13 @@ export default function EditConfig({fileItem, updateFile}:
                 <p className="text-xs text-slate-800 dark:text-slate-600">of {fileItem.numPages} total pages</p>
             </div>
 
-            <div className="bg-slate-800/60 backdrop-blur border border-slate-700/50 rounded-xl p-4 space-y-3">
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Print Options</span>
+            <div className="rounded-2xl border border-gray-200/80 bg-white/80 p-4 backdrop-blur dark:border-white/10 dark:bg-white/[0.02]">
+                <span className="text-xs font-semibold uppercase tracking-widest text-slate-700 dark:text-slate-400">Print Options</span>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="mt-3 grid grid-cols-2 gap-3">
                 {/* Color Type */}
                 <div className="space-y-1.5">
-                    <label className="text-xs text-slate-500">Color</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400">Color</label>
                     <div className="flex flex-col gap-1.5">
                     {(["black-white", "color"] as ColorType[]).map((opt) => (
                         <button
@@ -108,8 +108,8 @@ export default function EditConfig({fileItem, updateFile}:
                         onClick={() => handleSelectChange("colorType", opt)}
                         className={`text-xs px-3 py-2 rounded-lg border transition text-left ${
                             fileItem.colorType === opt
-                            ? "bg-blue-500/20 border-blue-500 text-blue-300"
-                            : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500"
+                            ? "border-cyan-400 bg-cyan-400/15 text-cyan-700 dark:text-cyan-300"
+                            : "border-gray-300 bg-white text-slate-600 hover:border-cyan-300 dark:border-white/10 dark:bg-[#151924] dark:text-slate-400"
                         }`}
                         >
                         {opt === "black-white" ? "⚫ B&W" : "🎨 Color"}
@@ -120,7 +120,7 @@ export default function EditConfig({fileItem, updateFile}:
 
                 {/* Print Type */}
                 <div className="space-y-1.5">
-                    <label className="text-xs text-slate-500">Sides</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400">Sides</label>
                     <div className="flex flex-col gap-1.5">
                     {(["single-sided", "double-sided"] as PrintType[]).map((opt) => (
                         <button
@@ -128,8 +128,8 @@ export default function EditConfig({fileItem, updateFile}:
                         onClick={() => handleSelectChange("printType", opt)}
                         className={`text-xs px-3 py-2 rounded-lg border transition text-left ${
                             fileItem.printType === opt
-                            ? "bg-blue-500/20 border-blue-500 text-blue-300"
-                            : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500"
+                            ? "border-cyan-400 bg-cyan-400/15 text-cyan-700 dark:text-cyan-300"
+                            : "border-gray-300 bg-white text-slate-600 hover:border-cyan-300 dark:border-white/10 dark:bg-[#151924] dark:text-slate-400"
                         }`}
                         >
                         {opt === "single-sided" ? "📄 Single" : "📋 Double"}
