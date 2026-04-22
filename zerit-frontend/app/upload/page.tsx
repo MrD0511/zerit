@@ -7,6 +7,10 @@ import FileUploadBox from "../components/print/FileUploadBox";
 import FilesList from "../components/print/FilesList";
 import EditConfig from "../components/print/FileEditor";
 import { ChevronLeft } from "lucide-react";
+import SubmitDialog from "../components/print/SubmitDialog";
+import { useState } from "react";
+import { uploadFiles } from "@/lib/api/upload";
+import ConfirmationContent from "../components/print/ConfirmationContent";
 
 const PDFViewer = dynamic(()=> import("../components/print/PdfViewer") , {
   ssr: false,
@@ -29,6 +33,40 @@ export default function UploadPage(){
     const totalPages = files.reduce((sum, file) => sum + file.numPages, 0);
     const hasFiles = files.length > 0;
     const selectedFileName = selectedFile?.file.name ?? "No file selected";
+    const [openSubmitDialog, setOpenSubmitDialog] = useState<Boolean>(false);
+    const [token, setToken] = useState<string>("")
+    const [isUploadSuccess, setIsUploadSuccess] = useState<boolean>(false)
+
+    const toggleSubmitDialog = () => {
+        setOpenSubmitDialog(!openSubmitDialog)
+    }
+
+    const handleFileSubmit = async (name: string, email: string) => {
+        try{
+            const formData = new FormData();
+
+            files.forEach((fileItem) => {
+                const { file, ...meta} = fileItem;
+                formData.append(`file_${meta.id}`, file);
+                formData.append(`meta_${meta.id}`, JSON.stringify(meta))
+            })
+
+            formData.append("name", name);
+            formData.append("email", email)
+
+            const response = await uploadFiles(formData);
+            
+            if(response.success){
+                setToken(response.token);
+                setIsUploadSuccess(true);
+                setOpenSubmitDialog(false);
+            }
+
+            return response;
+        }catch(error){
+            console.log(error)
+        }
+    }
 
     return (
         <PrintLayout 
@@ -110,6 +148,23 @@ export default function UploadPage(){
                         />
                     </div>
                 }
+            
+            submitDialog={
+                openSubmitDialog ? 
+                    <SubmitDialog toggleSubmitDialog={toggleSubmitDialog}
+                                  totalFiles={files.length}
+                                  totalPages={totalPages} 
+                                  handleSubmit={handleFileSubmit}
+                    />
+                : <></>
+            }
+
+            confirmationContent={
+                <ConfirmationContent token={token} />
+            }
+
+            toggleSubmitDialog={toggleSubmitDialog}
+            isUploadSuccess={isUploadSuccess}
         />
     )
 }
