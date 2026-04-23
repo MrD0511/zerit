@@ -3,7 +3,7 @@
 import Link from "next/link";
 import ThemeToggler from "./ThemeToggler";
 import Image from "next/image";
-import logo from "@/public/icon.png";
+import logo from "@/public/icons/icon-512.png";
 import { useEffect, useState } from "react";
 
 export default function NavBar() {
@@ -40,7 +40,7 @@ export default function NavBar() {
             className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
             style={{ fontFamily: "'Syne', sans-serif" }}
           >
-            Zerit
+            Zerit<span className="text-cyan-400">.</span>
           </span>
         </Link>
 
