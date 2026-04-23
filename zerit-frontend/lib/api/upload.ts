@@ -1,5 +1,5 @@
 
-const backend_url = process.env.NEXT_APP_BACKEND_URL;
+const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"; // default to localhost if not set
 
 export async function uploadFiles(formData: FormData) {
 
