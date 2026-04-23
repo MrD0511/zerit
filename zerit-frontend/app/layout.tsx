@@ -3,6 +3,7 @@ import "./globals.css";
 import NavBar from "./components/NavBar";
 
 import { Syne, DM_Sans } from "next/font/google";
+import Footer from "./components/Footer";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -31,14 +32,39 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${syne.variable} ${dmSans.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <script dangerouslySetInnerHTML={
+          {
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('theme');
+                  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                  if (theme === 'dark' || (!theme && systemDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `
+          }
+        }/>
+      </head>
 
       <body className="min-h-full flex flex-col">
         <NavBar />
         <main className="flex-1">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );

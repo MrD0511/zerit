@@ -60,18 +60,18 @@ export function useFiles(){
         );
         if (validItems.length === 0) return;
         setFiles((prev) => [...prev, ...validItems]);
-        setSelectedFileId((prev) => prev ?? validItems[0].id);
     }, [])
 
     const removeFileItem = (id: string) => {
         setFiles((prev) => {
             const updated = prev.filter((fileItem) => fileItem.id !== id);
-            setSelectedFileId((current) => {
-                if (current !== id) return current;
-                return updated.length > 0 ? updated[0].id : null;
-            });
             return updated;
         })
+    }
+
+    const resetFields = () => {
+        setFiles([])
+        setSelectedFileId(null)
     }
 
 
@@ -84,6 +84,7 @@ export function useFiles(){
         updateFile,
         applyToAll,
         setFiles,
+        resetFields
     };
 
 }

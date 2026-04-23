@@ -12,26 +12,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 export default function PdfViewer({ fileItem }: { fileItem: FileItem | null }) {
   const parentRef = useRef<HTMLDivElement>(null);
   const [numPages, setNumPages] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
   const start = fileItem?.range[0] ?? 1;
   const end = fileItem?.range[1] ?? 1;
-  const totalPages = fileItem ? end - start + 1 : 0;
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      if (entries[0]) {
-        setContainerWidth(entries[0].contentRect.width);
-      }
-    });
-  
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-  
-    return () => resizeObserver.disconnect();
-  }, []);
+  const safeStart = Math.max(1, start);
+  const safeEnd = numPages ? Math.min(end, numPages) : start;
+  const totalPages = numPages ? safeEnd - safeStart + 1 : 0;
 
   const virtualizer = useVirtualizer({
     count: totalPages,
@@ -39,6 +24,10 @@ export default function PdfViewer({ fileItem }: { fileItem: FileItem | null }) {
     estimateSize: () => 700,
     overscan: 3,
   });
+
+  useEffect(() => {
+    setNumPages(0);
+  }, [fileItem]);
 
   return (
     <div
@@ -53,53 +42,44 @@ export default function PdfViewer({ fileItem }: { fileItem: FileItem | null }) {
         </div>
       ) : (
         <div>
-        <Document
-          file={fileItem.file}
-          onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-        >
-          <div
-            style={{
-              height: `${virtualizer.getTotalSize()}px`,
-              position: "relative",
-            }}
+          <Document
+            file={fileItem.file}
+            onLoadSuccess={({ numPages }) => setNumPages(numPages)}
           >
-            {virtualizer.getVirtualItems().map((virtualRow) => {
-              const pageNum = start + virtualRow.index;
+            <div
+              style={{
+                height: `${virtualizer.getTotalSize()}px`,
+                position: "relative",
+              }}
+            >
+              {numPages > 0 &&
+                virtualizer.getVirtualItems().map((virtualRow) => {
+                  const pageNum = safeStart + virtualRow.index;
 
-              return (
-                <div
-                  key={virtualRow.key}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
-                >
-                  <Page
-                    pageNumber={pageNum}
-                    width={containerWidth}   // fit to parent
-                    scale={scale}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                    className="mb-4 overflow-hidden rounded-xl border border-gray-200/70 bg-white shadow-sm dark:border-white/10"
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </Document>
+                  if (pageNum > numPages) return null; // extra safety
 
-        <div className="flex gap-2 mb-2">
-            <button onClick={() => setScale((s) => Math.max(0.5, s - 0.2))}>
-            -
-            </button>
-            <span>{Math.round(scale * 100)}%</span>
-            <button onClick={() => setScale((s) => Math.min(3, s + 0.2))}>
-            +
-            </button>
+                  return (
+                    <div
+                      key={virtualRow.key}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                    >
+                      <Page
+                        pageNumber={pageNum}
+                        renderTextLayer={false}
+                        renderAnnotationLayer={false}
+                        className="mb-4 overflow-hidden rounded-xl border border-gray-200/70 bg-white shadow-sm dark:border-white/10"
+                      />
+                    </div>
+                  );
+                })}
             </div>
+          </Document>
         </div>
       )}
     </div>

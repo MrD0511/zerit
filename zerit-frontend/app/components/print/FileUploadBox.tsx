@@ -32,7 +32,7 @@ export default function FileUploadBox({ addFiles }:
     return (
         <label
             htmlFor="file-upload"
-            className={`group flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 transition-all ${
+            className={`group flex h-24 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 transition-all ${
                 isDragging
                     ? "border-cyan-400 bg-cyan-50/80 dark:bg-cyan-400/10"
                     : "border-cyan-400/50 bg-white/60 hover:border-cyan-400 hover:bg-cyan-50/60 dark:bg-white/[0.02] dark:hover:bg-cyan-400/5"
