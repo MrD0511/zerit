@@ -4,6 +4,7 @@ import Orders from "../models/Orders.js";
 import Files from "../models/Files.js";
 import { createOrder, pairFilesAndMetaData } from "../services/dataServices.js";
 import crypto from "crypto";
+import { sendEmail } from "../services/emailServices.js";
 
 
 const uploadController = async (req, res) => {
@@ -21,10 +22,10 @@ const uploadController = async (req, res) => {
         const {name, email} = body;
 
         if (!name || !email) {
-        return res.status(400).json({
-            success: false,
-            error: "Name and Email not provided"
-        });
+            return res.status(400).json({
+                success: false,
+                error: "Name and Email not provided"
+            });
         }
 
         const fileItems = pairFilesAndMetaData(files, body)
@@ -35,8 +36,6 @@ const uploadController = async (req, res) => {
             name: name,
             email: email,
         })
-
-        let uploadResults = [];
 
         await Promise.all(
             mergedPdfs.map(async (fileItem) => {
@@ -57,6 +56,8 @@ const uploadController = async (req, res) => {
                 });
             })
         );
+
+        sendEmail(email, order.token);
 
         return res.json({
             success: true,

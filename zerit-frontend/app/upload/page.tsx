@@ -26,6 +26,7 @@ export default function UploadPage(){
         addFiles,
         removeFileItem,
         updateFile,
+        resetFields
     } = useFiles();
 
 
@@ -68,6 +69,13 @@ export default function UploadPage(){
         }
     }
 
+    const resetPage = () => {
+        setToken("")
+        setOpenSubmitDialog(false)
+        setIsUploadSuccess(false)
+        resetFields()
+    }
+
     return (
         <PrintLayout 
             left={
@@ -84,12 +92,14 @@ export default function UploadPage(){
                         addFiles={addFiles}
                     />
 
-                    <FilesList 
-                        files={files}
-                        removeFileItem={removeFileItem}
-                        setSelectedFileId={setSelectedFileId}
-                        selectedFileId={selectedFileId}
-                    />
+                    <div className="h-80 overflow-y-auto">
+                        <FilesList 
+                            files={files}
+                            removeFileItem={removeFileItem}
+                            setSelectedFileId={setSelectedFileId}
+                            selectedFileId={selectedFileId}
+                        />
+                    </div>
                 </div>
             }
 
@@ -160,7 +170,7 @@ export default function UploadPage(){
             }
 
             confirmationContent={
-                <ConfirmationContent token={token} />
+                <ConfirmationContent token={token} resetPage={resetPage}/>
             }
 
             toggleSubmitDialog={toggleSubmitDialog}
