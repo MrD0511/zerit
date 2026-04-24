@@ -3,7 +3,7 @@ import CORS from "cors"
 import multer from "multer"
 import sequelize from "./config/db.js";
 import "./models/associations.js"
-import { uploadController } from "./controllers/upload.js";
+import { fetchOrder, uploadController } from "./controllers/upload.js";
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -28,6 +28,6 @@ app.get("/", (req, res) => {
 })
 
 app.post('/api/upload', upload.any(), uploadController)
-
+app.get('/api/fetch-order/:token', fetchOrder);
 
 export default app;

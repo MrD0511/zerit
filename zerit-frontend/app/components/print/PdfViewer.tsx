@@ -17,6 +17,21 @@ export default function PdfViewer({ fileItem }: { fileItem: FileItem | null }) {
   const safeStart = Math.max(1, start);
   const safeEnd = numPages ? Math.min(end, numPages) : start;
   const totalPages = numPages ? safeEnd - safeStart + 1 : 0;
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  useEffect(() => {
+    const el = parentRef.current;
+    if (!el) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      setContainerWidth(el.clientWidth);
+    });
+
+    resizeObserver.observe(el);
+    setContainerWidth(el.clientWidth);
+
+    return () => resizeObserver.disconnect();
+  }, []);
 
   const virtualizer = useVirtualizer({
     count: totalPages,
@@ -27,7 +42,7 @@ export default function PdfViewer({ fileItem }: { fileItem: FileItem | null }) {
 
   useEffect(() => {
     setNumPages(0);
-  }, [fileItem]);
+  }, [fileItem?.file]);
 
   return (
     <div
@@ -41,8 +56,9 @@ export default function PdfViewer({ fileItem }: { fileItem: FileItem | null }) {
           </p>
         </div>
       ) : (
-        <div>
+        <div className={`${fileItem.colorType === "color" ? "" : "grayscale"}`}>
           <Document
+            key={fileItem.id}
             file={fileItem.file}
             onLoadSuccess={({ numPages }) => setNumPages(numPages)}
           >
@@ -61,16 +77,14 @@ export default function PdfViewer({ fileItem }: { fileItem: FileItem | null }) {
                   return (
                     <div
                       key={virtualRow.key}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        transform: `translateY(${virtualRow.start}px)`,
-                      }}
+                      style={{ transform: `translateY(${virtualRow.start}px)` }}
+                      className={`absolute top-0 left-0 w-full
+                        
+                      `}
                     >
                       <Page
                         pageNumber={pageNum}
+                        width={containerWidth}
                         renderTextLayer={false}
                         renderAnnotationLayer={false}
                         className="mb-4 overflow-hidden rounded-xl border border-gray-200/70 bg-white shadow-sm dark:border-white/10"
