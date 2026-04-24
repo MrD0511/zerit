@@ -79,7 +79,7 @@ export default function PrintLayout(
                             </aside>
                         </div>
 
-                        <div className="mt-6 flex w-full items-center justify-end">
+                        <div className="mt-6 w-full items-center justify-end hidden md:flex">
 
                             <button type="button"
                             onClick={()=> toggleSubmitDialog() }

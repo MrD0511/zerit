@@ -180,6 +180,20 @@ export default function UploadPage(){
                             setSelectedFileId={setSelectedFileId}
                             selectedFileId={selectedFileId}
                         />
+
+                        <div className="mt-6 flex w-full items-center justify-end">
+
+                            <button type="button"
+                            onClick={()=> toggleSubmitDialog() }
+                                    className={`inline-flex items-center gap-2.5 rounded-2xl px-6 py-3 font-semibold text-white transition-all duration-300 ${
+                                        false
+                                            ? "cursor-not-allowed bg-gray-300 dark:bg-gray-700"
+                                            : "bg-gradient-to-r from-cyan-500 to-cyan-400 hover:scale-[1.02] active:scale-95"
+                                    }`}
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
                 }
             
