@@ -4,3 +4,6 @@ zerit-frontend/.next
 
 zerit-backend/node_modules
 zerit-backend/.env
+
+zerit-vendor-app/node_modules
+zerit-vendor-app/.vite

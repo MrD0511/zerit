@@ -9,7 +9,7 @@ import EditConfig from "../components/print/FileEditor";
 import { ChevronLeft } from "lucide-react";
 import SubmitDialog from "../components/print/SubmitDialog";
 import { useState } from "react";
-import { uploadFiles } from "@/lib/api/upload";
+import { uploadFiles } from "@/lib/api/apis";
 import ConfirmationContent from "../components/print/ConfirmationContent";
 
 const PDFViewer = dynamic(()=> import("../components/print/PdfViewer") , {
@@ -37,6 +37,8 @@ export default function UploadPage(){
     const [openSubmitDialog, setOpenSubmitDialog] = useState<Boolean>(false);
     const [token, setToken] = useState<string>("")
     const [isUploadSuccess, setIsUploadSuccess] = useState<boolean>(false)
+    const [enablePdfPreview, setEnablePdfPreview] = useState<boolean>(false);
+
 
     const toggleSubmitDialog = () => {
         setOpenSubmitDialog(!openSubmitDialog)
@@ -140,7 +142,29 @@ export default function UploadPage(){
                             </div>
                         </div>
 
-                        <PDFViewer fileItem={selectedFile || null} />
+                        <div className="flex justify-between items-center w-full px-3 py-6">
+                            <span className="text-gray-900 dark:text-gray-100 text-xl">Preview PDF</span>
+
+                            <button
+                                onClick={() => setEnablePdfPreview(!enablePdfPreview)}
+                                className={`relative w-11 h-6 rounded-full transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
+                                    enablePdfPreview ? "bg-cyan-400" : "bg-gray-200 dark:bg-white/10"
+                                }`}
+                                aria-pressed={enablePdfPreview}
+                                aria-label={"Toggle"}
+                                >
+                                <span
+                                    className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ${
+                                    enablePdfPreview ? "translate-x-5" : "translate-x-0"
+                                    }`}
+                                />
+                            </button>
+                        </div>
+                        
+                        {
+                            enablePdfPreview && 
+                            <PDFViewer fileItem={selectedFile || null} />
+                        }
 
                         <EditConfig fileItem={selectedFile} updateFile={updateFile} />
                     </div>

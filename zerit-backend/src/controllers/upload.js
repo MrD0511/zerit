@@ -1,5 +1,5 @@
 import { groupAndMergePdfs } from "../services/pdfMerge.js";
-import {uploadFile} from "../azureBlob.js"
+import {getSasUrl, uploadFile} from "../azureBlob.js"
 import Orders from "../models/Orders.js";
 import Files from "../models/Files.js";
 import { createOrder, pairFilesAndMetaData } from "../services/dataServices.js";
@@ -73,6 +73,67 @@ const uploadController = async (req, res) => {
     }
 }
 
+
+const fetchOrder = async (req, res) => {
+    try{
+        const token = req.params.token;
+
+        if(!token || token.length != 6){
+            return res.status(400).json({
+                success: false,
+                message: "Bad token"
+            })
+        } 
+
+        const order = await Orders.findOne({
+            where: {
+                token: token
+            }
+        });
+
+        if(!order){
+            return res.status(404).json({
+                success: false,
+                message: "Order not found."
+            })
+        }
+
+        const files = await Files.findAll({
+            where: {
+                orderId: order.id
+            }
+        })
+
+
+        const resultFiles = await Promise.all(
+        files.map(async (fileData) => {
+            const { url, ...rest } = fileData.dataValues;
+
+            const sasUrl = await getSasUrl(rest.filename);
+
+            return {
+            ...rest,
+            url: sasUrl
+            };
+        })
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Order fetched successfully.",
+            order: {...order.dataValues, files: resultFiles}
+        })
+    }catch(e){  
+        console.log("Error: ", e);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+
+
 export {
-    uploadController
+    uploadController,
+    fetchOrder
 }

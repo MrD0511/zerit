@@ -12,3 +12,11 @@ export async function uploadFiles(formData: FormData) {
 
   return res.json(); // maybe returns file URLs or ids
 }
+
+export async function fetchOrder(token: string){
+  const res = await fetch(`${backend_url}/api/fetch-order/${token}`)
+
+  if (!res.ok) throw new Error("Could not fetch your order.");
+
+  return res.json(); // maybe returns file URLs or ids
+}
