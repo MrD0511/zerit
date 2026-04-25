@@ -3,8 +3,8 @@ import { configDotenv } from "dotenv";
 
 configDotenv()
 
-const port = process.env.PORT || "8000"
+const port = process.env.PORT || "8088"
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0',() => {
     console.log(`Server is listning at http://localhost:${port} `);
 })
