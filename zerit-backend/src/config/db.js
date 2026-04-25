@@ -20,9 +20,9 @@ try {
   console.error('Unable to connect to the database:', error);
 }
 
-// (async () => {
-//   await sequelize.sync({ force: true });
-//   console.log('Tables created with foreign keys');
-// })();
+(async () => {
+   await sequelize.sync({ force: true });
+   console.log('Tables created with foreign keys');
+})();
 
 export default sequelize;
