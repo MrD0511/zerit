@@ -15,9 +15,11 @@ const upload = multer({
 const app = Express();
 
 app.use(CORS({
-    origin: "*"
+    origin: "https://zerit.vercel.app"
 }))
 
+app.use(Express.json({ limit: "20mb" }));
+app.use(Express.urlencoded({ limit: "20mb", extended: true }));
 
 app.get("/", (req, res) => {
 

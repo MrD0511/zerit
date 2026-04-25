@@ -33,7 +33,17 @@ async function mergePDFs(items) {
     for (const item of items) {
         const pdf = await PDFDocument.load(item.file.buffer);
 
-        const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        const [start, end] = item.range;
+
+        const startIndex = Math.max(0, start - 1);
+        const endIndex = Math.min(pdf.getPageCount(), end);
+
+        const indices = [];
+        for (let i = startIndex; i < endIndex; i++) {
+            indices.push(i);
+        }
+
+        const pages = await mergedPdf.copyPages(pdf, indices);
 
         for (let i = 0; i < item.numOfCopies; i++) {
             pages.forEach((page) => mergedPdf.addPage(page));
